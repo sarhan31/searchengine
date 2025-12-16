@@ -3,60 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini Search Engine</title>
+    <title>Scholia Search – Academic Prototype</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body>
 
-    <div id="initial-view">
-        <div class="centered-content">
-            <header class="initial-header">
-                <h1>Mini Search Engine – TF-IDF Based</h1>
-                <p class="subtitle">A search engine built from scratch using inverted indexing and TF-IDF ranking.</p>
-            </header>
-            <div class="search-section">
-                <input type="text" id="search-input" placeholder="Search documents (e.g., machine learning, data structures…)">
-                <button id="search-button"><span></span>Search</span><i data-feather="arrow-right"></i></button>
-            </div>
-            <div class="demo-queries">
-                <span>Try:</span>
-                <button class="demo-query-btn">machine learning</button>
-                <button class="demo-query-btn">data structures</button>
-                <button class="demo-query-btn">operating systems</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="results-view" style="display: none;">
-        <header id="main-header">
-            <div class="header-container">
-                <h1 class="results-title">Mini Search Engine</h1>
-                <div class="search-section-sticky">
-                    <input type="text" id="search-input-sticky" placeholder="Search documents…">
-                    <button id="search-button-sticky"><i data-feather="search"></i></button>
+    <div class="app-root">
+        <!-- Landing / Home View -->
+        <main id="home-view" class="home-view">
+            <header class="home-header">
+                <div class="brand">
+                    <div class="brand-mark">S</div>
+                    <div class="brand-text">
+                        <span class="brand-name">Scholia Search</span>
+                        <span class="brand-tagline">Academic search engine prototype</span>
+                    </div>
                 </div>
-            </div>
-        </header>
+            </header>
 
-        <div class="results-wrapper">
-            <main id="results-content">
-                <div id="results-section"></div>
-                <div id="skeleton-loader"></div>
-                <div id="error-message"></div>
+            <section class="home-hero">
+                <div class="home-hero-inner">
+                    <h1 class="hero-title">Search academic content with focus.</h1>
+                    <p class="hero-subtitle">
+                        This is a frontend-only prototype. Results are simulated while the research backend is being built.
+                    </p>
+
+                    <div class="search-bar search-bar-hero" role="search">
+                        <input
+                            type="text"
+                            id="search-input"
+                            class="search-input"
+                            placeholder="Search papers, PDFs, and academic topics (e.g. transformer architectures, climate policy)…"
+                            autocomplete="off"
+                            aria-label="Search scholarly content"
+                        />
+                        <button id="search-button" class="search-button" type="button">
+                            <span>Search</span>
+                        </button>
+                        <ul id="autocomplete-list" class="autocomplete-list" aria-label="Search suggestions"></ul>
+                    </div>
+
+                    <div class="home-sample-queries">
+                        <span class="sample-label">Try:</span>
+                        <button class="sample-chip" data-query="large language models">large language models</button>
+                        <button class="sample-chip" data-query="graph neural networks">graph neural networks</button>
+                        <button class="sample-chip" data-query="causal inference">causal inference</button>
+                    </div>
+
+                    <p class="home-disclaimer">
+                        **Note:** This interface is production-ready but currently connected to a mock data layer.
+                        A real backend will integrate via REST APIs without UI changes.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Results View -->
+        <div id="results-view" class="results-view" hidden>
+            <header class="results-header">
+                <div class="results-header-inner">
+                    <button id="brand-home" class="brand-inline" type="button">
+                        <div class="brand-mark brand-mark-small">S</div>
+                        <span class="brand-name-small">Scholia</span>
+                    </button>
+
+                    <div class="search-bar search-bar-inline" role="search">
+                        <input
+                            type="text"
+                            id="search-input-inline"
+                            class="search-input"
+                            placeholder="Search scholarly content…"
+                            autocomplete="off"
+                            aria-label="Search scholarly content"
+                        />
+                        <button id="search-button-inline" class="search-button" type="button" aria-label="Run search">
+                            <span>Search</span>
+                        </button>
+                        <ul id="autocomplete-list-inline" class="autocomplete-list" aria-label="Search suggestions"></ul>
+                    </div>
+                </div>
+
+                <nav class="filters" aria-label="Result type filters">
+                    <button class="filter-tab is-active" data-filter="all">All</button>
+                    <button class="filter-tab" data-filter="article">Articles</button>
+                    <button class="filter-tab" data-filter="pdf">PDFs</button>
+                    <button class="filter-tab" data-filter="recent">Recent</button>
+                </nav>
+            </header>
+
+            <main class="results-main">
+                <section class="results-panel" aria-live="polite" aria-busy="false">
+                    <div id="results-meta" class="results-meta"></div>
+
+                    <div id="results-list" class="results-list"></div>
+
+                    <div id="results-empty" class="state state-empty" hidden>
+                        <h2>No results yet</h2>
+                        <p>Try adjusting your query or filters. This prototype uses mock data while the backend is being built.</p>
+                    </div>
+
+                    <div id="results-error" class="state state-error" hidden>
+                        <h2>We couldn’t complete the search</h2>
+                        <p>There was a problem reaching the backend service. When the API is available, this message will guide users through retrying.</p>
+                        <button id="retry-button" class="secondary-button" type="button">Retry search</button>
+                    </div>
+
+                    <div id="results-loading" class="results-skeletons" hidden>
+                        <div class="skeleton-card">
+                            <div class="skeleton-line title"></div>
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton-line title"></div>
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton-line title"></div>
+                            <div class="skeleton-line"></div>
+                            <div class="skeleton-line short"></div>
+                        </div>
+                    </div>
+
+                    <nav id="pagination" class="pagination" aria-label="Search result pages" hidden>
+                        <button class="pagination-button" data-page="prev" type="button" disabled>Previous</button>
+                        <div class="pagination-info">
+                            <span id="pagination-label">Page 1</span>
+                        </div>
+                        <button class="pagination-button" data-page="next" type="button">Next</button>
+                    </nav>
+                </section>
+
+                <aside class="results-sidebar">
+                    <section class="sidebar-section">
+                        <h2 class="sidebar-title">Prototype status</h2>
+                        <p class="sidebar-copy">
+                            This is a **frontend-only academic prototype**. Results and timings are currently simulated.
+                        </p>
+                        <ul class="sidebar-list">
+                            <li>Planned backend: REST API over academic index</li>
+                            <li>Designed for TF‑IDF / neural ranking backends</li>
+                            <li>No tracking, no accounts, no ads</li>
+                        </ul>
+                    </section>
+
+                    <section class="sidebar-section">
+                        <h2 class="sidebar-title">Planned API endpoints</h2>
+                        <ul class="sidebar-endpoints">
+                            <li><code>GET /api/search</code></li>
+                            <li><code>GET /api/suggest</code></li>
+                            <li><code>GET /api/document/:id</code></li>
+                            <li><code>POST /api/analytics/search</code></li>
+                            <li><code>GET /api/health</code></li>
+                        </ul>
+                        <p class="sidebar-copy small">
+                            The UI talks to these via a small client module, so backend changes require no layout work.
+                        </p>
+                    </section>
+                </aside>
             </main>
-            <aside id="system-info-panel">
-                <!-- System info injected here -->
-            </aside>
         </div>
+
+        <footer class="app-footer">
+            <p>Academic Project | Search Engine Frontend Prototype</p>
+        </footer>
     </div>
 
     <script src="script.js"></script>
-    <script>
-        feather.replace();
-    </script>
 </body>
 </html>
