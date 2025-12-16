@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Search Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+
+    <div id="initial-view">
+        <div class="centered-content">
+            <header class="initial-header">
+                <h1>Mini Search Engine – TF-IDF Based</h1>
+                <p class="subtitle">A search engine built from scratch using inverted indexing and TF-IDF ranking.</p>
+            </header>
+            <div class="search-section">
+                <input type="text" id="search-input" placeholder="Search documents (e.g., machine learning, data structures…)">
+                <button id="search-button"><span></span>Search</span><i data-feather="arrow-right"></i></button>
+            </div>
+            <div class="demo-queries">
+                <span>Try:</span>
+                <button class="demo-query-btn">machine learning</button>
+                <button class="demo-query-btn">data structures</button>
+                <button class="demo-query-btn">operating systems</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="results-view" style="display: none;">
+        <header id="main-header">
+            <div class="header-container">
+                <h1 class="results-title">Mini Search Engine</h1>
+                <div class="search-section-sticky">
+                    <input type="text" id="search-input-sticky" placeholder="Search documents…">
+                    <button id="search-button-sticky"><i data-feather="search"></i></button>
+                </div>
+            </div>
+        </header>
+
+        <div class="results-wrapper">
+            <main id="results-content">
+                <div id="results-section"></div>
+                <div id="skeleton-loader"></div>
+                <div id="error-message"></div>
+            </main>
+            <aside id="system-info-panel">
+                <!-- System info injected here -->
+            </aside>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
+</html>
